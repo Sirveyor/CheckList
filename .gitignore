@@ -2,5 +2,6 @@
 __pycache__/
 *.pyc
 build/
-dist/
+dist/*
+!dist/TimeSheetChecklist.exe
 output/
