@@ -1,14 +1,14 @@
 Recordable Plats
-☐ Lot corners (size and material)
-☐ Adjacent corners with size and material preferable adjacent to missing lot corners
-☐ All fences within 5 feet of property lines
-☐ Any structure within 5 feet of property lines
-☐ Any utilities that may indicate an easement (power lines, sewer manholes… etc.)
-☐ Closed traverse (except small subdivision lots)
-☐ Distance to nearest street intersection (except for subdivisions)
-☐ All improvements on the lot (buildings, pavements, pools… etc.)
-☐ All building dimensions (check front to back and side to side for errors)
-☐ Building descriptions
-☐ Edge of road
-☐ Protected trees (see requirements in folder for tree size\canopy)
+@corners_size
+@corners_adjacent
+@fences_5ft
+@structures_5ft
+@utilities_easement
+@traverse_closed
+@street_intersection_sub
+@improvements_lot
+@building_dims
+@building_desc
+@edge_of_road
+@protected_trees_note
 ☐ Must be on State Plane Coordinate System

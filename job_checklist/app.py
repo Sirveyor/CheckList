@@ -1,5 +1,6 @@
 """Tkinter GUI: pick a job number and checklists, generate the PDF into the
-job folder on the network share, log it, and send it to the chosen printer.
+job folder on the network share, log it, and optionally send it to the
+chosen printer.
 """
 from __future__ import annotations
 
@@ -8,7 +9,7 @@ from datetime import datetime
 from tkinter import messagebox, ttk
 
 from . import jobfolder, layout, printing, theme
-from .checklists import Checklist, load_all
+from .checklists import Checklist, Item, dedupe, load_all
 
 
 class App(tk.Tk):
@@ -89,7 +90,12 @@ class App(tk.Tk):
         frame = ttk.Frame(self, padding=10)
         frame.pack(fill="x")
 
-        ttk.Label(frame, text="Printer").grid(row=0, column=0, sticky="w")
+        self.print_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            frame, text="Print", variable=self.print_var, command=self._update_printer_state
+        ).grid(row=0, column=0, sticky="w")
+
+        ttk.Label(frame, text="Printer").grid(row=0, column=1, sticky="w", padx=(12, 0))
         try:
             printers = printing.list_printers()
         except Exception:
@@ -99,8 +105,14 @@ class App(tk.Tk):
             default = printers[0] if printers else None
 
         self.printer_var = tk.StringVar(value=default or "")
-        combo = ttk.Combobox(frame, textvariable=self.printer_var, values=printers, width=40, state="readonly")
-        combo.grid(row=0, column=1, sticky="w", padx=(6, 0))
+        self.printer_combo = ttk.Combobox(
+            frame, textvariable=self.printer_var, values=printers, width=40, state="readonly"
+        )
+        self.printer_combo.grid(row=0, column=2, sticky="w", padx=(6, 0))
+        self._update_printer_state()
+
+    def _update_printer_state(self) -> None:
+        self.printer_combo.configure(state="readonly" if self.print_var.get() else "disabled")
 
     def _build_action_row(self) -> None:
         frame = ttk.Frame(self, padding=10)
@@ -109,7 +121,7 @@ class App(tk.Tk):
         self.status_var = tk.StringVar(value="")
         ttk.Label(frame, textvariable=self.status_var, foreground="gray").pack(side="left")
 
-        ttk.Button(frame, text="Generate & Print", command=self.on_generate).pack(side="right")
+        ttk.Button(frame, text="Generate", command=self.on_generate).pack(side="right")
 
     def _apply_theme(self) -> None:
         name = "dark" if self.dark_mode_var.get() else "light"
@@ -127,7 +139,7 @@ class App(tk.Tk):
 
     def custom_checklist(self) -> Checklist | None:
         raw = self.custom_items_text.get("1.0", "end")
-        items = tuple(line.strip() for line in raw.splitlines() if line.strip())
+        items = tuple(Item(text=line.strip()) for line in raw.splitlines() if line.strip())
         if not items:
             return None
         title = self.custom_title_var.get().strip() or "Job-Specific Items"
@@ -148,6 +160,7 @@ class App(tk.Tk):
         custom = self.custom_checklist()
         if custom:
             selected = [custom] + selected
+        selected = dedupe(selected)
 
         extension = self.extension_var.get().strip()
         display_job_number = f"{job_number}-{extension}" if extension else job_number
@@ -163,7 +176,7 @@ class App(tk.Tk):
 
         jobfolder.log_job(display_job_number)
 
-        if printer_name:
+        if self.print_var.get() and printer_name:
             try:
                 printing.print_pdf(out_path, printer_name)
             except Exception as e:

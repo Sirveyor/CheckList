@@ -110,7 +110,7 @@ def _build_lines(checklists: list[Checklist], font: str, size: float, text_width
             lines.append(ChecklistLine("spacer", ""))
         lines.append(ChecklistLine("heading", cl.title))
         for item in cl.items:
-            wrapped = _wrap(item, font, size, text_width)
+            wrapped = _wrap(item.text, font, size, text_width)
             lines.append(ChecklistLine("item", wrapped[0]))
             for cont in wrapped[1:]:
                 lines.append(ChecklistLine("item_cont", cont))

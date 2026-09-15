@@ -1,16 +1,16 @@
 Engineering Survey
-☐ Lot corners (size and material)
-☐ Adjacent corners with size and material (preferably adjacent to missing lot corners)
-☐ All fences within 5 feet of property lines
-☐ Any structure within 5 feet of property lines
-☐ Any utilities that may indicate an easement (power lines, sewer manholes… etc.)
-☐ Closed traverse (except small subdivision lots, check point less than 0.05’)
-☐ Distance to nearest street intersection
-☐ All improvements on the lot (buildings, pavements, pools… etc.)
-☐ Building descriptions. All building dimensions (check front to back and side to side for errors)
+@corners_size
+@corners_adjacent
+@fences_5ft
+@structures_5ft
+@utilities_easement
+@traverse_closed_chk
+@street_intersection
+@improvements_lot
+@building_dims_desc
 ☐ Edge of road/curb with elevations
 ☐ Center of road with elevations
-☐ Protected trees
+@protected_trees
 ☐ TBM with description and location and DATUM and sketch
 ☐ Ground elevations on project grid to include adjacent properties (min 5’/ max 25’)
 ☐ FFE on all structures
