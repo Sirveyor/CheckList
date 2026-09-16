@@ -8,7 +8,7 @@ import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox, ttk
 
-from . import jobfolder, layout, printing, theme
+from . import jobfolder, layout, printing, review, theme
 from .checklists import Checklist, Item, dedupe, load_all
 
 
@@ -161,6 +161,10 @@ class App(tk.Tk):
         if custom:
             selected = [custom] + selected
         selected = dedupe(selected)
+
+        selected = review.review_items(self, selected)
+        if selected is None:
+            return
 
         extension = self.extension_var.get().strip()
         display_job_number = f"{job_number}-{extension}" if extension else job_number
